@@ -1,0 +1,5 @@
+@echo off
+
+rem _asmhelper_repeat
+{_command}
+rem _asmhelper_repeat

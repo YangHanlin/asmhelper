@@ -1,0 +1,104 @@
+{
+    "system-directory": "<Your DOSBox workspace>\\SystemDirectory",
+    "user-directory": "<Your DOSBox workspace>\\UserDirectory",
+    "task-path": "{user-directory}\\TASKS\\TASK.BAT",
+    "path-expansion-needed": [],
+    "config-expansion-needed": [
+        "task-path"
+    ],
+    "dosbox": {
+        "path": "<Path to DOSBox installation (dosbox.exe)>",
+        "args": [
+            "-noconsole",
+            "-userconf"
+        ]
+    },
+    "recipes": [
+        {
+            "id": "build-and-run",
+            "commands": [
+                {
+                    "type": "recipe",
+                    "recipe": "dosbox-build"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "run"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "clean"
+                }
+            ]
+        },
+        {
+            "id": "build-and-debug",
+            "commands": [
+                {
+                    "type": "recipe",
+                    "recipe": "dosbox-build"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "debug"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "clean"
+                }
+            ]
+        },
+        {
+            "id": "dosbox-build",
+            "commands": [
+                {
+                    "type": "host",
+                    "command": "copy /Y {source} {user-directory}"
+                },
+                {
+                    "type": "dosbox",
+                    "command":
+                        "ml {source}"
+                }
+            ]
+        },
+        {
+            "id": "run",
+            "commands": [
+                {
+                    "type": "dosbox",
+                    "command": [
+                        "cls",
+                        "{source-without-extension}.exe",
+                        "echo=",
+                        "pause"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "debug",
+            "commands": [
+                {
+                    "type": "dosbox",
+                    "command": [
+                        "cls",
+                        "debug {source-without-extension}.exe"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "clean",
+            "commands": [
+                {
+                    "type": "host",
+                    "command": [
+                        "del {user-directory}\\{source-without-extension}.*",
+                        "del stdout.txt stderr.txt"
+                    ]
+                }
+            ]
+        }
+    ]
+}
