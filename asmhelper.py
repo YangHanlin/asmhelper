@@ -270,18 +270,18 @@ def parse_commandline_args() -> bool:
 def init_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=configuration['program-name'],
-        description='A simple helper for running & debugging assembly programs under DOSBox.',
+        description='A simple script to build & run assembly programs in DOSBox.',
         allow_abbrev=False)
     parser.add_argument('source', metavar='SOURCE',
-                        help='The source file requiring assembling & debugging.')
+                        help='the source file being dealt with (i.e. assembling & debugging)')
     parser.add_argument('-r', '--recipe', metavar='ID/INDEX', default='0',
-                        help='The recipe used to perform tasks, specified by its id or index in'
-                             'the \'recipes\' array. When omitted, the first recipe is used.')
+                        help='the recipe used to perform tasks, specified by its id or index in'
+                             'the \'recipes\' array; the first recipe is used when omitted')
     parser.add_argument('-f', '--fix-config', action='store_true',
-                        help='Try fixing your configuration by restoring to default.')
+                        help='try fixing your configuration by restoring to default.')
     parser.add_argument('-V', '--version', action='version',
                         version='{program-name} {program-version} from {program-path}'.format(**configuration),
-                        help='Show version information and exit.')
+                        help='show version information and exit')
     return parser
 
 
