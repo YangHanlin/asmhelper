@@ -47,7 +47,6 @@ message_levels = [
 
 def main() -> None:
     load_configuration()
-    # print('configuration = {}'.format(configuration))
     if configuration['fix-config']:
         message('Fixing configuration')
         fix_config_file()
@@ -62,38 +61,39 @@ def expand_path(path: str) -> str:
 
 
 def run_recipe(recipe: dict) -> None:
-    recipe_replacement = []
-    for i in range(len(recipe['commands'])):
-        command_group = recipe['commands'][i]
-        if command_group['type'] == 'recipe':
-            found = False
-            for j in range(len(configuration['recipes'])):
-                if configuration['recipes'][j]['id'] == command_group['recipe']:
-                    recipe_replacement.append((i, j))
-                    found = True
-                    break
-            if not found:
-                try:
-                    recipe_index = int(command_group['recipe'])
-                    if recipe_index not in range(len(configuration['recipes'])):
-                        message('Invalid referenced recipe index {}'.format(recipe_index), level=2)
+    recipe_commands = recipe['commands']
+    while True:
+        recipe_replacement = []
+        for i in range(len(recipe_commands)):
+            command_group = recipe_commands[i]
+            if command_group['type'] == 'recipe':
+                found = False
+                for j in range(len(configuration['recipes'])):
+                    if configuration['recipes'][j]['id'] == command_group['recipe']:
+                        recipe_replacement.append((i, j))
+                        found = True
+                        break
+                if not found:
+                    try:
+                        recipe_index = int(command_group['recipe'])
+                        if recipe_index not in range(len(configuration['recipes'])):
+                            message('Invalid referenced recipe index {}'.format(recipe_index), level=2)
+                            sys.exit(1)
+                        recipe_replacement.append((i, recipe_index))
+                        found = True
+                    except ValueError:
+                        message('Cannot find referenced recipe \'{}\''.format(command_group['recipe']), level=2)
                         sys.exit(1)
-                    recipe_replacement.append((i, recipe_index))
-                    found = True
-                except ValueError:
-                    message('Cannot find referenced recipe \'{}\''.format(configuration['recipe']), level=2)
-                    sys.exit(1)
-    recipe_commands = None
-    if recipe_replacement:
-        replaced_commands = recipe['commands'][:recipe_replacement[0][0]] \
-                            + configuration['recipes'][recipe_replacement[0][1]][
-                                'commands']  # does not support multiple referencing
-        for i in range(1, len(recipe_replacement)):
-            replaced_commands.extend(recipe['commands'][recipe_replacement[i - 1][0] + 1:recipe_replacement[i][0]])
-            replaced_commands.extend(configuration['recipes'][recipe_replacement[i][1]]['commands'])
-        recipe_commands = replaced_commands
-    else:
-        recipe_commands = recipe['commands']
+        if recipe_replacement:
+            replaced_commands = recipe_commands[:recipe_replacement[0][0]] \
+                                + configuration['recipes'][recipe_replacement[0][1]][
+                                    'commands']
+            for i in range(1, len(recipe_replacement)):
+                replaced_commands.extend(recipe_commands[recipe_replacement[i - 1][0] + 1:recipe_replacement[i][0]])
+                replaced_commands.extend(configuration['recipes'][recipe_replacement[i][1]]['commands'])
+            recipe_commands = replaced_commands
+        else:
+            break
     for command_group in recipe_commands:
         commands = []
         if type(command_group['command']) == str:
@@ -128,6 +128,9 @@ def run_recipe(recipe: dict) -> None:
             print('> DOSBox has exited <')
             if return_code:
                 message('DOSBox seems to have encountered an error ({}).'.format(return_code), level=1)
+        else:
+            message('Unsupported runtime type \'{}\' of command group'.format(command_group['type']), level=2)
+            sys.exit(1)
 
 
 def generate_task(commands: list, template: str) -> str:
