@@ -216,8 +216,8 @@ def polish_configuration() -> bool:
     if type(configuration['path-expansion-needed']) != list:
         message('Invalid configuration for \'path-expansion-needed\'', level=2)
         return False
-    configuration['path-expansion-needed'] = list(set(
-        configuration['path-expansion-needed'] + additional_path_expansion_needed))
+    configuration['path-expansion-needed'] = combine(configuration['path-expansion-needed'],
+                                                     additional_path_expansion_needed)
     for needed in configuration['path-expansion-needed']:
         if needed in configuration:
             configuration[needed] = expand_path(configuration[needed])
@@ -226,8 +226,8 @@ def polish_configuration() -> bool:
     if type(configuration['config-expansion-needed']) != list:
         message('Invalid configuration for \'config-expansion-needed\'', level=2)
         return False
-    configuration['config-expansion-needed'] = list(set(
-        configuration['config-expansion-needed'] + additional_config_expansion_needed))
+    configuration['config-expansion-needed'] = combine(configuration['config-expansion-needed'],
+                                                       additional_config_expansion_needed)
     for needed in configuration['config-expansion-needed']:
         if needed in configuration:
             configuration[needed] = configuration[needed].format(**configuration)
@@ -307,6 +307,14 @@ def message(msg: str, level=0, *args, **kwargs) -> None:
         message_levels[level][0],
         msg
     ), file=message_levels[level][1], *args, **kwargs)
+
+
+def combine(a: list, b: list) -> list:
+    res = a.copy()
+    for item in b:
+        if item not in res:
+            res.append(item)
+    return res
 
 
 def fix_config_file() -> None:
