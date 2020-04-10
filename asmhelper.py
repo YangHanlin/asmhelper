@@ -12,6 +12,7 @@ import subprocess
 program_version = 'v0.0.1'
 default_config = '`/default.json'
 user_config = '~/.config/asmhelper/config.json'
+max_expansion_level = 128
 configuration = {}
 configuration_only = ['dosbox', 'recipes', 'broken', 'source-without-extension']
 additional_path_expansion_needed = ['task-template']
@@ -62,6 +63,7 @@ def expand_path(path: str) -> str:
 
 def run_recipe(recipe: dict) -> None:
     recipe_commands = recipe['commands']
+    expansion_level = 0
     while True:
         recipe_replacement = []
         for i in range(len(recipe_commands)):
@@ -92,6 +94,10 @@ def run_recipe(recipe: dict) -> None:
                         sys.exit(1)
                     recipe_replacement.append((i, recipe_index))
         if recipe_replacement:
+            expansion_level += 1
+            if expansion_level > max_expansion_level:
+                message('Recipe expansion level has exceeded the maximum limit {}'.format(max_expansion_level), level=2)
+                sys.exit(1)
             replaced_commands = recipe_commands[:recipe_replacement[0][0]] \
                                 + configuration['recipes'][recipe_replacement[0][1]][
                                     'commands']
