@@ -1,13 +1,16 @@
 {
-    "system-directory": "<Your DOSBox workspace>\\SystemDirectory",
-    "user-directory": "<Your DOSBox workspace>\\UserDirectory",
+    "dosbox-workspace": "<DOSBOX WORKSPACE DIRECTORY>",
+    "system-directory": "{dosbox-workspace}\\SystemDirectory",
+    "user-directory": "{dosbox-workspace}\\UserDirectory",
     "task-path": "{user-directory}\\TASKS\\TASK.BAT",
     "path-expansion-needed": [],
     "config-expansion-needed": [
+        "system-directory",
+        "user-directory",
         "task-path"
     ],
     "dosbox": {
-        "path": "<Path to DOSBox installation (dosbox.exe)>",
+        "path": "<DOSBox.exe LOCATION>",
         "args": [
             "-noconsole",
             "-userconf"
@@ -15,7 +18,16 @@
     },
     "recipes": [
         {
-            "id": "build-and-run",
+            "id": "default",
+            "commands": [
+                {
+                    "type": "recipe",
+                    "recipe": "dosbox-build-run"
+                }
+            ]
+        },
+        {
+            "id": "dosbox-build-run",
             "commands": [
                 {
                     "type": "recipe",
@@ -32,7 +44,7 @@
             ]
         },
         {
-            "id": "build-and-debug",
+            "id": "dosbox-build-debug-debug",
             "commands": [
                 {
                     "type": "recipe",
@@ -40,7 +52,24 @@
                 },
                 {
                     "type": "recipe",
-                    "recipe": "debug"
+                    "recipe": "debug-debug"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "clean"
+                }
+            ]
+        },
+        {
+            "id": "dosbox-build-codeview-debug",
+            "commands": [
+                {
+                    "type": "recipe",
+                    "recipe": "dosbox-build"
+                },
+                {
+                    "type": "recipe",
+                    "recipe": "codeview-debug"
                 },
                 {
                     "type": "recipe",
@@ -57,8 +86,14 @@
                 },
                 {
                     "type": "dosbox",
-                    "command":
-                        "ml {source}"
+                    "command": [
+                        "cls",
+                        "ml /Zi {source}",
+                        "if not errorlevel 1 goto terminate",
+                        "echo=",
+                        "pause",
+                        "terminate:"
+                    ]
                 }
             ]
         },
@@ -69,21 +104,39 @@
                     "type": "dosbox",
                     "command": [
                         "cls",
+                        "if not exist {source-without-extension}.exe goto terminate",
                         "{source-without-extension}.exe",
                         "echo=",
-                        "pause"
+                        "pause",
+                        "terminate:"
                     ]
                 }
             ]
         },
         {
-            "id": "debug",
+            "id": "debug-debug",
             "commands": [
                 {
                     "type": "dosbox",
                     "command": [
                         "cls",
-                        "debug {source-without-extension}.exe"
+                        "if not exist {source-without-extension}.exe goto terminate",
+                        "debug {source-without-extension}.exe",
+                        "terminate:"
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "codeview-debug",
+            "commands": [
+                {
+                    "type": "dosbox",
+                    "command": [
+                        "cls",
+                        "if not exist {source-without-extension}.exe goto terminate",
+                        "cv {source-without-extension}.exe",
+                        "terminate:"
                     ]
                 }
             ]
