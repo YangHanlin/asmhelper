@@ -9,7 +9,7 @@ import shutil
 import sys
 import subprocess
 
-program_version = 'v0.0.1'
+program_version = 'v0.2'
 default_config = '`/default.json'
 user_config = '~/.config/asmhelper/config.json'
 max_expansion_level = 128
