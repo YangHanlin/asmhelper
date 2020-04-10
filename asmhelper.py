@@ -67,23 +67,30 @@ def run_recipe(recipe: dict) -> None:
         for i in range(len(recipe_commands)):
             command_group = recipe_commands[i]
             if command_group['type'] == 'recipe':
-                found = False
-                for j in range(len(configuration['recipes'])):
-                    if configuration['recipes'][j]['id'] == command_group['recipe']:
-                        recipe_replacement.append((i, j))
-                        found = True
-                        break
-                if not found:
-                    try:
-                        recipe_index = int(command_group['recipe'])
-                        if recipe_index not in range(len(configuration['recipes'])):
-                            message('Invalid referenced recipe index {}'.format(recipe_index), level=2)
+                if type(command_group['recipe']) == str:
+                    found = False
+                    for j in range(len(configuration['recipes'])):
+                        if configuration['recipes'][j]['id'] == command_group['recipe']:
+                            recipe_replacement.append((i, j))
+                            found = True
+                            break
+                    if not found:
+                        try:
+                            recipe_index = int(command_group['recipe'])
+                            if recipe_index not in range(len(configuration['recipes'])):
+                                message('Invalid referenced recipe index {}'.format(recipe_index), level=2)
+                                sys.exit(1)
+                            recipe_replacement.append((i, recipe_index))
+                            found = True
+                        except ValueError:
+                            message('Cannot find referenced recipe \'{}\''.format(command_group['recipe']), level=2)
                             sys.exit(1)
-                        recipe_replacement.append((i, recipe_index))
-                        found = True
-                    except ValueError:
-                        message('Cannot find referenced recipe \'{}\''.format(command_group['recipe']), level=2)
+                elif type(command_group['recipe'] == int):
+                    recipe_index = command_group['recipe']
+                    if recipe_index not in range(len(configuration['recipes'])):
+                        message('Invalid referenced recipe index {}.'.format(recipe_index), level=2)
                         sys.exit(1)
+                    recipe_replacement.append((i, recipe_index))
         if recipe_replacement:
             replaced_commands = recipe_commands[:recipe_replacement[0][0]] \
                                 + configuration['recipes'][recipe_replacement[0][1]][
