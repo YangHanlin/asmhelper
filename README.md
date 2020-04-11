@@ -15,7 +15,7 @@
 7. Find and open the configuration file (try searching `DOSBox options`). Copy the content of `Autoexec.bat.txt` to **the `[autoexec]` section of the configuration file**.
 8. Replace the `<DOSBOX WORKSPACE DIRECTORY>` with what it should really be.
 
-### Download & Configure Assembly Helper
+### Download & configure Assembly Helper
 
 1. Clone (recommended because it enables you to stay updated) or download this repository;
 
