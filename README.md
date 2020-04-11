@@ -34,6 +34,12 @@
 
    ![Result](https://i.loli.net/2020/04/11/hNuFVtmI1ZSvxXf.png)
 
+### Further steps
+
+- If you would like to configure VS Code tasks to use `asmhelper.py`, there is a [sample `tasks.json`](https://github.com/YangHanlin/asmhelper/releases/download/v0.0/tasks.json) for you to refer to.
+
 ## License
 
-All contents in this repository, except as otherwise noted, are licensed under the [GNU General Public License 3.0 (GPLv3)](LICENSE).
+All contents in this repository, except as otherwise noted or belong to other copyright holder(s), are licensed under the [GNU General Public License 3.0 (GPLv3)](LICENSE).
+
+The packed assets (`Assets.zip` or `Simplified-Assets.zip`) contain files extracted from a disk image with MS-DOS 6.22 and MASM 6.11 installed, both copyrighted properties of their respective copyright holders, including Microsoft Corporation.
