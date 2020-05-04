@@ -291,7 +291,7 @@ def init_parser() -> argparse.ArgumentParser:
     parser.add_argument('source', metavar='SOURCE',
                         help='the source file being dealt with (i.e. assembling & debugging)')
     parser.add_argument('-r', '--recipe', metavar='ID/INDEX', default='0',
-                        help='the recipe used to perform tasks, specified by its id or index in'
+                        help='the recipe used to perform tasks, specified by its id or index in '
                              'the \'recipes\' array; the first recipe is used when omitted')
     parser.add_argument('-f', '--fix-config', action='store_true',
                         help='try fixing your configuration by restoring to default.')
