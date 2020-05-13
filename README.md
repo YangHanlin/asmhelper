@@ -42,4 +42,4 @@
 
 All contents in this repository, except as otherwise noted or belong to other copyright holder(s), are licensed under the [GNU General Public License 3.0 (GPLv3)](LICENSE).
 
-The packed assets (`Assets.zip` or `Simplified-Assets.zip`) contain files extracted from a disk image with MS-DOS 6.22 and MASM 6.11 installed, both copyrighted properties of their respective copyright holders, including Microsoft Corporation.
+The packed assets (`Assets.zip` or `Simplified-Assets.zip`) contain files extracted from a disk image with MS-DOS 6.22, MASM 6.11 and Turbo C++ 3.0 installed, both copyrighted properties of their respective copyright holders, including Microsoft Corporation and Borland International.
